@@ -1,0 +1,61 @@
+.RegisterPage{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: url("./image/backgroundImage.png");
+    background-size: 100% 100%;
+}
+
+.registerCard{
+    position: absolute;
+    top:15%;
+    left:10%;
+    bottom: 15%;
+    right: 10%;
+    background-color: snow;
+    border-radius: 10px;
+    box-shadow: 0 0 10px 5px #aaa;
+}
+
+.registerImage{
+    position: absolute;
+    top:0;
+    left:0;
+    bottom: 0;
+    right: 30%;
+    background: url("./image/picture.png");
+    background-size: 100% 100%;
+    border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px;
+}
+
+.registerInformationCard{
+    position: absolute;
+    top:0;
+    left:70%;
+    bottom: 0;
+    right: 0;
+    text-align: center;
+}
+
+.language{
+    position: absolute;
+    left: 80%;
+    top:5%;
+    width: 154px;
+}
+
+.arco-tabs-header-title-text{
+    font-size: 18px;
+}
+
+.arco-tabs-header-nav{
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.arco-tabs-content{
+    padding: 0;
+}

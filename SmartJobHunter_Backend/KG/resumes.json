@@ -1,0 +1,62 @@
+[
+    {
+        "id": 1,
+        "name": "凡广",
+        "age": 21,
+        "phone": "18570662505",
+        "email": "3166387637@qq.com",
+        "intention": "Java开发工程师",
+        "skills": "SpringBoot, 软件, 接口, 设计, 物联网, 数据库, 维护, ps, MySQL, 多线程, C",
+        "major": null,
+        "city": "长沙",
+        "education": null
+    },
+    {
+        "id": 2,
+        "name": "曹锦",
+        "age": 24,
+        "phone": "18872174864",
+        "email": "342097753@qq.com",
+        "intention": "算法工程师",
+        "skills": "python, pytorch, 软件",
+        "major": "统计学",
+        "city": null,
+        "education": "本科"
+    },
+    {
+        "id": 3,
+        "name": "王增齐",
+        "age": 22,
+        "phone": "15697402005",
+        "email": "xg_2015486533@163.com",
+        "intention": "Java开发工程师",
+        "skills": "CSS, HTML, SpringBoot, JavaScript, Ajax, Git, 前端, 软件, 项目经验, 工作经验, 设计, 数据库, 沟通, HTML, JavaScript, CSS, ps, MySQL, C",
+        "major": null,
+        "city": null,
+        "education": null
+    },
+    {
+        "id": 4,
+        "name": "王子源",
+        "age": null,
+        "phone": "52023061611",
+        "email": "wzyuan572351326@163.com",
+        "intention": null,
+        "skills": "pytorch, 设计, Python, C++, C",
+        "major": "计算机科学与技术",
+        "city": "沈阳",
+        "education": "本科"
+    },
+    {
+        "id": 5,
+        "name": "凡广",
+        "age": 21,
+        "phone": "18570662505",
+        "email": "3166387637@qq.com",
+        "intention": "Java开发工程师",
+        "skills": "SpringBoot, 软件, 接口, 设计, 物联网, 数据库, 维护, ps, MySQL, 多线程, C",
+        "major": null,
+        "city": "长沙",
+        "education": null
+    }
+]

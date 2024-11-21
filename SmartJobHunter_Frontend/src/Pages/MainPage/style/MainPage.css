@@ -1,0 +1,23 @@
+.buttonText{
+    position: absolute;
+    top:0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.animation:hover{
+    animation: move 0.5s;
+    animation-fill-mode: forwards;
+}
+@keyframes move {
+    from{
+        color: white;
+    }
+    to{
+        color: rgba(60,192,201,100%);
+    }
+}
