@@ -27,20 +27,20 @@ def upload_resume(user_id):
 
     if file:
         filename = secure_filename(file.filename)
-        filename = f"{user_id}_{filename}"
+        filename = f"{user_id}_{filename}.pdf"
         # 检查文件是否为PDF格式
         if not filename.lower().endswith('pdf'):
             return jsonify({'message': '文件格式不正确，请上传PDF文件'}), 422
 
         # 保存文件到公共目录
-        public_resumes_dir = os.path.join(current_app.root_path, 'public', 'Resumes')
+        public_resumes_dir = os.path.join(current_app.root_path, 'static', 'resumes')
         if not os.path.exists(public_resumes_dir):
             os.makedirs(public_resumes_dir)
         file_path = os.path.join(public_resumes_dir, filename)
         file.save(file_path)
 
         # 构建可通过Web访问的URL
-        web_accessible_url = request.url_root.rstrip('/') + '/public/Resumes/' + filename
+        web_accessible_url = request.url_root.rstrip('/') + '/static/resumes/' + filename
 
         # 实体提取逻辑
         text = read_pdf_file(file_path)

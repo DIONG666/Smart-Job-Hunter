@@ -69,8 +69,8 @@ def get_recommended_jobs(user_id):
 
 @jobs.route('/jobs/evaluation/<int:user_id>/<int:job_id>', methods=['GET'])
 def ability_evaluation(user_id, job_id):
-    resume_path = 'Resumes.json'
-    all_info_path = 'all_info.json'
+    resume_path = 'globalData/resumes.json'
+    all_info_path = 'globalData/all_info.json'
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute('''

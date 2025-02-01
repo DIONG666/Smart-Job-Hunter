@@ -12,7 +12,7 @@ from showRecommendation.Resume import resumes
 app = Flask(__name__)
 CORS(app, resources=r'/*', origins='*', allow_headers='*')
 
-app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), 'Resumes/')
+
 # 注册蓝图
 app.register_blueprint(users)
 app.register_blueprint(students)
