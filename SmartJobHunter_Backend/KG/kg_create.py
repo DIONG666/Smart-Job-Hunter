@@ -160,7 +160,7 @@ def clean_data(data):
 
 
 # 读取CSV文件
-with open('../data_all.csv', 'r', encoding='utf-8') as file:
+with open('../globalData/predefinedInfo/data_all.csv', 'r', encoding='utf-8') as file:
     csv_data = csv.reader(file)
     next(csv_data)  # 跳过标题行
     raw_data = list(csv_data)

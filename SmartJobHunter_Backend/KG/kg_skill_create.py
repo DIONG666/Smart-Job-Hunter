@@ -46,7 +46,7 @@ def read_csv_data(filepath):
 # 主逻辑
 def main():
     # 读取并处理企业招聘信息
-    recruitment_data = read_csv_data('../data_all.csv')  # 假设数据文件名为data_all.csv
+    recruitment_data = read_csv_data('../globalData/predefinedInfo/data_all.csv')  # 假设数据文件名为data_all.csv
     create_identity_and_keyword_nodes(recruitment_data)
 
 
