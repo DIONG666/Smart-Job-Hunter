@@ -2,7 +2,7 @@ import MainPage from "./Pages/MainPage/MainPage";
 import RegisterPage from "./Pages/RegisterPage/RegisterPage";
 import SignInPage from "./Pages/SignInPage/SignInPage";
 import ApplyForJobPage from "./Pages/MainPage/components/home/ApplyForJob/ApplyForJobPage";
-import HomePage from "./Pages/MainPage/components/home/HomePage";
+import HomePage from "./Pages/MainPage/components/home/HomePage/HomePage";
 import ProfessionConsultPage from "./Pages/MainPage/components/home/ProfessionConsultPage";
 import RecruitPage from "./Pages/MainPage/components/home/RecruitPage/RecruitPage";
 import PersonalInformationPage from "./Pages/MainPage/components/person/student/PersonalInformationPage";
@@ -14,8 +14,14 @@ import FirmGuidePage from "./Pages/GuidePage/components/FirmGuidePage";
 import SecondStudentGuidePage from "./Pages/GuidePage/components/SecondStudentGuidePage";
 import FirmInformation from "./Pages/MainPage/components/person/firm/FirmInformation";
 import EditFirmInformation from "./Pages/MainPage/components/person/firm/EditFirmInformation";
+import InitialPage from "./Pages/InitialPage";
+import InterviewPage from "./Pages/MainPage/components/home/InterviewPage/InterviewPage";
 
 const routes=[
+    {
+        path: '/',
+        element: <InitialPage />
+    },
     {
         path:'/main',
         element:<MainPage />,
@@ -55,8 +61,12 @@ const routes=[
                         element:<EditFirmInformation/>
                     }
                 ]
-            }
+            },
         ]
+    },
+    {
+        path: '/main/interview',
+        element: <InterviewPage />,
     },
     {
         path: '/signIn',

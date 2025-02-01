@@ -11,6 +11,7 @@ import {
 import { useEffect, useRef, useState } from 'react';
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
+import RequestURL from "../../../requestURL";
 
 const FormItem = Form.Item;
 
@@ -59,7 +60,7 @@ const TelephoneRegister = () => {
 
         axios({
           method: 'post',
-          url: 'http://192.210.174.146:5000/sms/send',
+          url: RequestURL+'/sms/send',
           data: {
             "phone": phone,
           }
@@ -180,7 +181,7 @@ const TelephoneRegister = () => {
                   } else {
                     axios({
                       method:'post',
-                      url:'http://192.210.174.146:5000/users/register-with-sms',
+                      url:RequestURL+'/users/register-with-sms',
                       data:{
                         "username": name,
                         "email": email,

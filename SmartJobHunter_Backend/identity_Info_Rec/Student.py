@@ -12,7 +12,7 @@ from py2neo import Graph, Node, Relationship
 
 students = Blueprint('students', __name__)
 
-DATABASE = 'Information.db'
+DATABASE = 'globalData/Information.db'
 
 
 def get_db_connection():
@@ -234,7 +234,7 @@ def update_student_info():
                   data['email'], data['profession'], data['educationExperience'], data['internship'],
                   data['project'], data['advantage']))
     # ljl修改了一下提取逻辑
-    with open('../globalData/predefinedInfo/keywords.txt', 'r', encoding='utf-8') as file:
+    with open('globalData/predefinedInfo/keywords.txt', 'r', encoding='utf-8') as file:
         keywords = file.read().split('、')
     skills = []
     data_str = json.dumps(data, ensure_ascii=False)
@@ -292,9 +292,9 @@ def update_student_info():
         ''')
 
         # 调用函数并获取返回的数据
-        resume_data_path = 'data/resumes.json'
-        all_info_path = 'data/all_info.json'
-        city_location_path = 'data/city_coordinates_cache.json'
+        resume_data_path = 'globalData/resumes.json'
+        all_info_path = 'globalData/all_info.json'
+        city_location_path = 'globalData/city_coordinates_cache.json'
         all_scores = recommend_jobs(resume_data_path, user_id, all_info_path, city_location_path)
 
         cursor.execute('DELETE FROM recommended_jobs WHERE user_id = ?', (user_id,))
@@ -355,7 +355,7 @@ def update_student_info():
 
 # ljl修改：加入了两个函数供转成json文件使用
 def fetch_student_info(user_id):
-    conn = sqlite3.connect('Information.db')
+    conn = sqlite3.connect('globalData/Information.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute(
@@ -367,7 +367,7 @@ def fetch_student_info(user_id):
     return student_info_dict
 
 
-def save_student_info_to_json(student_info, filename='Resumes.json'):
+def save_student_info_to_json(student_info, filename='globalData/resumes.json'):
     import json
     try:
         with open(filename, 'r', encoding='utf-8') as file:
@@ -468,7 +468,7 @@ def extract_info_from_pdf_resume(text):
             intention = text[start_index:end_index].strip()
             break
     if intention:
-        titles = load_titles_from_file('../globalData/title.txt')
+        titles = load_titles_from_file('globalData/title.txt')
         for title in titles:
             if title in intention:
                 intention = title
@@ -485,7 +485,7 @@ def extract_info_from_pdf_resume(text):
             skills = text[start_index:end_index].strip()
             break
     if skills:
-        matched_skills = match_keywords(skills, '../globalData/predefinedInfo/description.txt')
+        matched_skills = match_keywords(skills, 'globalData/predefinedInfo/description.txt')
         skills = matched_skills
     info['专业技能'] = skills
 

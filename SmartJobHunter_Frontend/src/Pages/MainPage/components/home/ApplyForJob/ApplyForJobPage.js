@@ -6,9 +6,13 @@ import clock from './image/clock.png'
 import link from './image/link.png'
 import proFile from './image/profile.png'
 import graduation from './image/graduation.png'
+import interview from './image/interviewButton.png'
 import axios from "axios";
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {marked} from "marked";
+import ReactEcharts from 'echarts-for-react'
+import PubSub from 'pubsub-js'
+import RequestURL from "../../../../../requestURL";
 
 const RadioGroup = Radio.Group;
 
@@ -19,25 +23,28 @@ const selectedCardStyle={
     backgroundColor:'white',
     position:'relative',
     border:'1px solid rgba(60,192,201,100%)',
-    color:'rgba(60,192,201,100%)'
+    color:'rgba(60,192,201,100%)',
+    padding:'7px 10px 7px 10px'
 }
 const notSelectedCardStyle={
     width: '100%',
     height: '100%',
     borderRadius:15,
     backgroundColor:'white',
-    position:'relative'
+    position:'relative',
+    padding:'7px 10px 7px 10px'
 }
 const ApplyForJobPage=()=>{
+    const navigate=useNavigate()
+
     const user=useLocation().state
     useEffect(() => {
         axios({
             method:'get',
-            url:'http://192.210.174.146:5000/jobs/recommended/'+user.user_id,
+            url:RequestURL+'/jobs/recommended/'+user.user_id,
         }).then(
             res=>{
                 setJob(res.data)
-                setSelectedJob(job[0])
                 setAllLoading(false)
                 setHaveJob(true)
             },
@@ -65,37 +72,103 @@ const ApplyForJobPage=()=>{
         address:'',
         link:'',
         match:0,
-        id:0
+        id:0,
+        abilityMatch:0,
+        educationMatch:0,
+        addressMatch:0,
+        salaryMatch:0
     }])
-    const [selectedJob,setSelectedJob]=useState(job[0])
+    const [selectedJob,setSelectedJob]=useState({
+        job:'',
+        salary:'',
+        city:'',
+        name:'',
+        skills:[],
+        description:'',
+        education:'',
+        lastActive:'',
+        manager:'',
+        address:'',
+        link:'',
+        match:0,
+        id:-1,
+        abilityMatch:0,
+        educationMatch:0,
+        addressMatch:0,
+        salaryMatch:0
+    })
     const [evaluation,setEvaluation]=useState('')
 
     const [loading,setLoading]=useState(true)
     const [allLoading,setAllLoading]=useState(true)
     const [haveJob,setHaveJob]=useState(false)
 
+    const [yData,setYData]=useState([selectedJob.abilityMatch,selectedJob.educationMatch,selectedJob.addressMatch,selectedJob.salaryMatch]);
+    const option = {
+        xAxis: {
+            type: 'category',
+            data: ['能力','学历','地址','薪资']
+        },
+        yAxis: {
+            type: 'value'
+        },
+        grid:{
+            left:'2%',
+            right:'2%',
+            top:'6%',
+            bottom:'2%',
+            containLabel:'true'
+        },
+        series: [
+            {
+                data: yData,
+                type: 'bar',
+                showBackground: true,
+                itemStyle:{
+                    normal:{
+                        color:function (params){
+                            const color=['#FF6B6B','#4DDBE9','#F9DA68','#CAB8FF']
+                            return color[params.dataIndex]
+                        }
+                    }
+                },
+                label: {
+                    show: true, // 开启显示
+                    verticalAlign: 'middle',
+                    textStyle: {
+                        color: '#424656', // 顶部数据的颜色
+                        fontSize: 14     // 顶部数据的字体大小
+                    },
+                }
+            }
+        ]
+    };
+
     useEffect(()=>{
+        setYData([selectedJob.abilityMatch,selectedJob.educationMatch,selectedJob.addressMatch,selectedJob.salaryMatch])
+
         axios({
             method:'get',
-            url:`http://192.210.174.146:5000/jobs/evaluation/${user.user_id}/${selectedJob.id}`
+            url:RequestURL+`/jobs/evaluation/${user.user_id}/${selectedJob.id}`
         }).then(
             res=>{
                 setEvaluation(res.data)
                 setLoading(false)
             },
-            err=>{setLoading(false)}
+            err=>{}
         )
     },[selectedJob])
 
     function KeyWordList({value}){
-        return <div style={{display:'flex'}}>
+        if (value.length === 0){
+            return null
+        }
+        value=JSON.parse(value)
+        return <div style={{display:'flex',flexFlow:'row wrap'}}>
             {
-                value.length===0?
-                    ''
-                    :
-                    value.map((value)=>{
-                        return <div style={{marginRight:10,backgroundColor:"#ececec",color:'darkslategray',padding:'1px 13px 1px 13px',fontSize:12,borderRadius:5}}>{value}</div>
-                    })
+                value.map((value)=>{
+                    return <div style={{margin:4,backgroundColor:"#ececec",color:'darkslategray',padding:'1px 13px 1px 13px',fontSize:12,borderRadius:5}}>{value}</div>
+                })
             }
         </div>
     }
@@ -104,7 +177,7 @@ const ApplyForJobPage=()=>{
         return (<Radio.Group>
             {job.map((value)=>{
                 return (
-                    <Radio key={value} value={value} style={{width:300, height:130, marginBottom:20}}>
+                    <Radio key={value} value={value} style={{width:'80%', marginBottom:20}}>
                         {({checked})=>{
                             return (
                                 <Button
@@ -115,28 +188,24 @@ const ApplyForJobPage=()=>{
                                         setSelectedJob(value)
                                     }}
                                 >
-                                    <div style={{fontSize:16}}>
-                                        <div style={{position:'absolute',top:'7%',left:'6%',textAlign:'left'}}>
-                                            <div style={{marginBottom:5}}>
-                                                <span>{value.job}</span>
-                                            </div>
-                                            <KeyWordList value={value.skills} />
+                                    <div style={{fontSize:16,display:'flex',justifyContent:'space-between'}}>
+                                        <div>
+                                            {value.job}
                                         </div>
-                                        <div style={{color:"red",position:'absolute',top:'7%',right:'6%'}}>
+                                        <div  style={{color:"red"}}>
                                             {value.salary}
                                         </div>
                                     </div>
-                                    <div>
-                                        <div style={{position:'absolute',bottom:'7%',left:'6%'}}>
-                                            {value.city} | {value.name}
+                                    <KeyWordList value={value.skills} />
+                                    <div style={{marginTop:5,textAlign:'left'}}>
+                                        {value.city} | {value.name}
+                                    </div>
+                                    <div style={{display:'flex',alignItems:'baseline'}}>
+                                        <div>
+                                            <span>匹配度：</span>
                                         </div>
-                                        <div style={{position:'absolute',bottom:'5%',right:'5%'}}>
-                                            <div>
-                                                <span>匹配度：</span>
-                                            </div>
-                                            <div style={{fontSize:21,fontWeight:'bold',color:'red'}}>
-                                                {value.match}%
-                                            </div>
+                                        <div style={{fontSize:21,fontWeight:'bold',color:'red'}}>
+                                            {value.match}%
                                         </div>
                                     </div>
                                 </Button>
@@ -163,10 +232,29 @@ const ApplyForJobPage=()=>{
                                 <RadioGroup onChange={value => {
                                     axios({
                                         method:'get',
-                                        url:'http://192.210.174.146:5000/jobs/sort/'+value,
+                                        url:RequestURL+`/jobs/sort/${user.user_id}/${value}`,
                                     }).then(
                                         res=>{
                                             setJob(res.data)
+                                            setSelectedJob({
+                                                job:'',
+                                                salary:'',
+                                                city:'',
+                                                name:'',
+                                                skills:[],
+                                                description:'',
+                                                education:'',
+                                                lastActive:'',
+                                                manager:'',
+                                                address:'',
+                                                link:'',
+                                                match:0,
+                                                id:-1,
+                                                abilityMatch:0,
+                                                educationMatch:0,
+                                                addressMatch:0,
+                                                salaryMatch:0
+                                            })
                                         },
                                         error=>{
                                             if (error.response){
@@ -178,14 +266,89 @@ const ApplyForJobPage=()=>{
                                     )
                                 }}>
                                     <Radio key={1} value='education'>学历优先</Radio>
-                                    <Radio key={2} value='location'>地址优先</Radio>
+                                    <Radio key={2} value='skills'>能力优先</Radio>
                                     <Radio key={3} value='salary'>薪资优先</Radio>
-                                    <Radio key={4} value='skills'>能力优先</Radio>
+                                    <Radio key={4} value='location'>地址优先</Radio>
                                 </RadioGroup>
                             </div>
                             <div style={{marginLeft:'20%'}}>
-                                <Button style={{color:'white',backgroundColor:'rgba(60,192,201,100%)',width:110,height:40,fontSize:18,borderRadius:5}}>修改简历</Button>
-                                <Button style={{marginLeft:20,color:'white',backgroundColor:'rgba(60,192,201,100%)',width:110,height:40,fontSize:18,borderRadius:5}}>重新推荐</Button>
+                                <Button
+                                    onClick={()=>{
+                                        PubSub.publish('goToPerson')
+                                        navigate('/main/student_information',{state:user})
+                                    }}
+                                    style={{color:'white',backgroundColor:'rgba(60,192,201,100%)',width:110,height:40,fontSize:18,borderRadius:5}}
+                                >
+                                    修改简历
+                                </Button>
+                                <Button
+                                    onClick={()=>{
+                                        setJob([{
+                                            job:'',
+                                            salary:'',
+                                            city:'',
+                                            name:'',
+                                            skills:[],
+                                            description:'',
+                                            education:'',
+                                            lastActive:'',
+                                            manager:'',
+                                            address:'',
+                                            link:'',
+                                            match:0,
+                                            id:0,
+                                            abilityMatch:0,
+                                            educationMatch:0,
+                                            addressMatch:0,
+                                            salaryMatch:0
+                                        }])
+                                        setSelectedJob({
+                                            job:'',
+                                            salary:'',
+                                            city:'',
+                                            name:'',
+                                            skills:[],
+                                            description:'',
+                                            education:'',
+                                            lastActive:'',
+                                            manager:'',
+                                            address:'',
+                                            link:'',
+                                            match:0,
+                                            id:-1,
+                                            abilityMatch:0,
+                                            educationMatch:0,
+                                            addressMatch:0,
+                                            salaryMatch:0
+                                        })
+
+                                        setLoading(true)
+                                        setAllLoading(true)
+                                        setHaveJob(false)
+
+                                        axios({
+                                            method:'get',
+                                            url:RequestURL+'/jobs/recommended/'+user.user_id,
+                                        }).then(
+                                            res=>{
+                                                setJob(res.data)
+                                                setAllLoading(false)
+                                                setHaveJob(true)
+                                            },
+                                            error=>{
+                                                if(error.response){
+                                                    Message.error('未找到推荐职位！')
+                                                } else {
+                                                    Message.error('Network Error!')
+                                                }
+                                                setAllLoading(false)
+                                            }
+                                        )
+                                    }}
+                                    style={{marginLeft:20,color:'white',backgroundColor:'rgba(60,192,201,100%)',width:110,height:40,fontSize:18,borderRadius:5}}
+                                >
+                                    重新推荐
+                                </Button>
                             </div>
                         </div>
                         <div style={{width:'100%',display:'flex',height:'90%'}}>
@@ -193,7 +356,18 @@ const ApplyForJobPage=()=>{
                                 <CardList />
                             </div>
                             <div style={{width:'75%',display:'flex',justifyContent:'center',alignItems:'center'}}>
-                                <div style={{width:'90%',height:'90%',backgroundColor:'white',borderRadius:10}}>
+                                <div style={{width:'90%',height:'90%',backgroundColor:'white',borderRadius:10,position:'relative'}}>
+                                    <img
+                                        src={interview}
+                                        onClick={()=>{
+                                            window.open(
+                                                'http://localhost:3000/main/interview'
+                                            )
+                                        }}
+                                        style={{width:105,height:40,position:'absolute',top:20,right:50}}
+                                    >
+                                        查看简历
+                                    </img>
                                     <div style={{height:'10%',margin:'15px 50px 20px 50px',display:'flex',justifyContent:'space-between'}}>
                                         <div>
                                             <div style={{display:'flex'}}>
@@ -227,8 +401,8 @@ const ApplyForJobPage=()=>{
                                         </div>
                                     </div>
                                     <div style={{height:'80%',margin:'10px 50px 10px 50px',display:'flex',justifyContent:'space-between'}}>
-                                        <div style={{width:'50%',height:'100%',position:'relative'}}>
-                                            <div style={{width:'100%',height:'75%'}}>
+                                        <div style={{width:'48%',marginRight:'2%',height:'100%',position:'relative',overflow:'auto'}}>
+                                            <div style={{width:'100%'}}>
                                                 <div style={{fontWeight:'bold',fontSize:17,marginBottom:7}}>
                                                     职位描述
                                                 </div>
@@ -237,21 +411,26 @@ const ApplyForJobPage=()=>{
                                                     {selectedJob.description}
                                                 </div>
                                             </div>
-                                            <div style={{width:'100%',height:'25%',position:'absolute',bottom:0,left:0}}>
+                                            <div style={{width:'100%',marginTop:30}}>
                                                 <div style={{fontWeight:'bold',fontSize:17,marginBottom:4}}>
                                                     招聘信息
                                                 </div>
-                                                <div style={{display:'flex',alignItems:'center',marginBottom:4,fontSize:16}}>
+                                                <div style={{width:'100%',display:'flex',alignItems:'center',marginBottom:4,fontSize:16}}>
                                                     <img  src={proFile} alt='' style={{width:15,height:17}}/>
                                                     &nbsp;&nbsp;招聘经理：{selectedJob.manager}
                                                 </div>
-                                                <div style={{display:'flex',alignItems:'center',marginBottom:4,fontSize:16}}>
+                                                <div style={{width:'100%',display:'flex',alignItems:'center',marginBottom:4,fontSize:16}}>
                                                     <img  src={pin} alt='' style={{width:14,height:17}}/>
                                                     &nbsp;&nbsp;工作地点：{selectedJob.address}
                                                 </div>
-                                                <div style={{display:'flex',alignItems:'center',marginBottom:4,fontSize:16}}>
-                                                    <img  src={link} alt='' style={{width:15,height:17}}/>
-                                                    &nbsp;&nbsp;招聘链接：{selectedJob.link}
+                                                <div style={{width:'100%',marginBottom:4,fontSize:16,wordWrap:'break-word'}}>
+                                                    <div style={{width:'100%',display:'flex',alignItems:'center'}}>
+                                                        <img  src={link} alt='' style={{width:15,height:17}}/>
+                                                        &nbsp;&nbsp;招聘链接：
+                                                    </div>
+                                                    <a onClick={()=>{window.open(selectedJob.link)}} style={{textDecoration:'none',color:'blue',cursor:'pointer'}}>
+                                                        {selectedJob.link}
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>
@@ -260,13 +439,15 @@ const ApplyForJobPage=()=>{
                                             <div style={{fontWeight:'bold',fontSize:17,width:'100%',height:'6%'}}>
                                                 能力评价
                                             </div>
-                                            <div style={{width:'100%',height:'50%'}}>
-
-                                            </div>
+                                            <ReactEcharts style={{width:'100%',height:'50%'}} option={option} />
                                             {
-                                                loading?
-                                                    <Card style={{width:'100%',height:'40%',marginTop:'4%'}} bordered={false} loading={true} />:
-                                                    <div dangerouslySetInnerHTML={{__html: marked.parse(evaluation) }} id='evaluation' style={{width:'100%',height:'40%',marginTop:'4%',overflow:'auto',fontSize:16}}></div>
+                                                selectedJob.id===-1?
+                                                    null
+                                                    :
+                                                    loading?
+                                                        <Card style={{width:'100%',height:'40%',marginTop:'4%'}} bordered={false} loading={true} />
+                                                        :
+                                                        <div dangerouslySetInnerHTML={{__html: marked.parse(evaluation) }} id='evaluation' style={{width:'100%',height:'40%',marginTop:'4%',overflow:'auto',fontSize:16}}></div>
                                             }
                                         </div>
                                     </div>

@@ -4,6 +4,7 @@ import { Button, Form, Input, Message } from '@arco-design/web-react';
 import { IconSafe, IconUnlock, IconUser } from '@arco-design/web-react/icon';
 import { useEffect, useRef, useState } from 'react';
 import {useNavigate} from "react-router-dom";
+import RequestURL from "../../../requestURL";
 import axios from "axios";
 
 const FormItem = Form.Item;
@@ -53,7 +54,7 @@ const [event,setEvent]=useState(true)
 
           axios({
             method: 'post',
-            url: 'http://192.210.174.146:5000/sms/send',
+            url: RequestURL+'/sms/send',
             data: {
               "phone": phone,
             }
@@ -246,7 +247,6 @@ const [event,setEvent]=useState(true)
               borderRadius: '5px',
             }}
             onClick={async () => {
-              navigate('/main/home',{state:{identity:'student',user_id:123}});
               if(inputCode===code){
                 if (formRef.current) {
                   try {
@@ -256,7 +256,7 @@ const [event,setEvent]=useState(true)
                     } else {
                       axios({
                         method:'post',
-                        url:'http://192.210.174.146:5000/users/login-with-sms',
+                        url:RequestURL+'/users/login-with-sms',
                         data:{
                           "phone": tempPhone,
                           "verificationCode": tempVerify,

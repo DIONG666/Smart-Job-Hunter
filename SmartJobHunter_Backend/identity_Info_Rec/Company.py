@@ -14,7 +14,7 @@ with open('globalData/predefinedInfo/cityname.txt', 'r', encoding='utf-8') as fi
     cities = file.read().splitlines()
 
 companies = Blueprint('companies', __name__)
-DATABASE = 'Information.db'
+DATABASE = 'globalData/Information.db'
 
 
 def get_db_connection():
@@ -191,11 +191,11 @@ def create_company_info():
         #         graph.merge(relationship)
 
         # grj:调用人才推荐函数(ljl:推荐函数中记得增加创建及存储推荐人才（学生）id+契合度的数据库)
-        resumes_data_path = 'data/resumes.json'
+        resumes_data_path = 'globalData/resumes.json'
         work_id = user_id
         # 假设的特定工作ID
-        all_info_path = 'data/all_info.json'
-        city_location_path = 'data/city_coordinates_cache.json'
+        all_info_path = 'globalData/all_info.json'
+        city_location_path = 'globalData/city_coordinates_cache.json'
         all_scores = recommend_resumes(resumes_data_path, work_id, all_info_path, city_location_path)
         # 数据库操作
         conn = get_db_connection()
@@ -275,7 +275,7 @@ def create_company_info():
 
 # ljl修改
 def fetch_company_info(user_id):
-    conn = sqlite3.connect('Information.db')
+    conn = sqlite3.connect('globalData/Information.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute('SELECT id, user_id, education,salary,address,skills,city FROM company_info where user_id=?',
@@ -286,7 +286,7 @@ def fetch_company_info(user_id):
     return company_info_dist
 
 
-def save_company_info_to_json(company_info, filename='all_info.json'):
+def save_company_info_to_json(company_info, filename='globalData/all_info.json'):
     try:
         with open(filename, 'r', encoding='utf-8') as file:
             existing_data = json.load(file)

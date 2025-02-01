@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 users = Blueprint('users', __name__)
 
 # ljl:创建账户信息数据库文件,把这个db文件名字改了
-DATABASE = 'Information.db'
+DATABASE = 'globalData/Information.db'
 
 
 def get_db_connection():

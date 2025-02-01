@@ -4,7 +4,7 @@ import os
 
 resumes = Blueprint('Resumes', __name__)
 
-DATABASE = 'Information.db'
+DATABASE = 'globalData/Information.db'
 
 
 def get_db_connection():

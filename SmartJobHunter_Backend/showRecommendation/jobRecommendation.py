@@ -8,7 +8,7 @@ import time
 
 jobs = Blueprint('jobs', __name__)
 
-DATABASE = 'Information.db'
+DATABASE = 'globalData/Information.db'
 
 
 def calculate_last_active(created_at):

@@ -1,6 +1,6 @@
 import './App.css';
 import "@arco-design/web-react/dist/css/arco.css";
-import { useRoutes } from "react-router-dom";
+import {useRoutes} from "react-router-dom";
 import routes from "./routes";
 
 function App() {

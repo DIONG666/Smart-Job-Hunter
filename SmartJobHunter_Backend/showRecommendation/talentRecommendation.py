@@ -4,7 +4,7 @@ import time
 
 talents = Blueprint('talents', __name__)
 
-DATABASE = 'Information.db'
+DATABASE = 'globalData/Information.db'
 
 
 def get_db_connection():
