@@ -6,3 +6,7 @@
 ### 本地配置方法
 * 后端：打开后端项目，配置`requirements.txt`，并运行`main.py`文件启动服务器。
 * 前端：进入前端文件夹CMD控制台，首次启动前端界面前先运行指令npm install安装项目依赖（之后启动无需运行此命令）。运行指令 npm run start启动前端。启动前端项目后，在浏览器地址栏中输入 http://localhost:3000 进入网站。
+### 语音转文字功能
+* wordToText：语音转文字
+* textToWord：文字转语音
+* test：测试；调用text_to_speech(text)，向该函数传入需要AI朗读的文字内容，AI将进行朗读；调用audio_to_text()函数，将用户的语音转成文字，该函数的返回值为相应的文字
