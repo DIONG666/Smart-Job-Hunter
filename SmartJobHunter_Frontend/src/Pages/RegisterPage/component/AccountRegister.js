@@ -6,6 +6,7 @@ import {useEffect, useRef, useState} from 'react';
 import '../style/RegisterPage.css';
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
+import RequestURL from "../../../requestURL";
 
 const FormItem = Form.Item;
 
@@ -109,7 +110,7 @@ const AccountRegister = () => {
                         await formRef.current.validate();
                         axios({
                             method:'post',
-                            url:'http://192.210.174.146:5000/users/register-with-account',
+                            url:RequestURL+'/users/register-with-account',
                             data:{
                                 "username": name,
                                 "email": email,

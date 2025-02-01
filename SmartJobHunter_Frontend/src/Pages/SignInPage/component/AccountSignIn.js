@@ -5,6 +5,7 @@ import {IconSafe, IconUnlock, IconUser} from '@arco-design/web-react/icon';
 import {useEffect, useRef, useState} from 'react';
 import { useNavigate} from "react-router-dom";
 import axios from "axios";
+import RequestURL from "../../../requestURL";
 
 const FormItem = Form.Item;
 
@@ -148,7 +149,7 @@ const AccountSignIn = () => {
         </FormItem>
 
         <FormItem field="密码" rules={[{ required: true }]}>
-          <Input
+          <Input.Password
               onChange={value=>{password=value}}
             placeholder="请输入密码"
             prefix={<IconUnlock />}
@@ -188,7 +189,7 @@ const AccountSignIn = () => {
                           await formRef.current.validate();
                           axios({
                               method:'post',
-                              url:'http://192.210.174.146:5000/users/login-with-account',
+                              url:RequestURL+'/users/login-with-account',
                               data:{
                                   "login": name,
                                   "password": password,

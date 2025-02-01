@@ -1,7 +1,8 @@
 import {Button, Message, Modal, Radio, Upload} from "@arco-design/web-react";
-import {Link, Outlet, useLocation, useNavigate} from "react-router-dom";
+import {Outlet, useLocation, useNavigate} from "react-router-dom";
 import {useState} from "react";
 import axios from "axios";
+import RequestURL from "../../../../../requestURL";
 const RadioGroup = Radio.Group;
 
 const PersonalInformationPage=()=>{
@@ -37,7 +38,7 @@ const PersonalInformationPage=()=>{
                 }}>
                     <Upload
                         drag
-                        action={`http://192.210.174.146:5000/resume/upload/${user.user_id}`}
+                        action={RequestURL+`/resume/upload/${user.user_id}`}
                         limit={1}
                         onExceedLimit={() => {
                             Message.warning('超过上传数量限制！最多上传1个');
@@ -168,7 +169,7 @@ const PersonalInformationPage=()=>{
                         <RadioGroup onChange={value=>{
                             axios({
                                 method:'post',
-                                url:'http://192.210.174.146:5000/resume/post-info/'+user.user_id,
+                                url:RequestURL+'/resume/post-info/'+user.user_id,
                                 data:{
                                     "identity":'student',
                                     "privacySetting":value,

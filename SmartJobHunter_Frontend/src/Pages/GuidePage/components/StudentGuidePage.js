@@ -8,6 +8,7 @@ import rightWord from '../images/studentRightWord.png'
 import rightIcon from '../images/studentRightIcon.png'
 import '../style/guide.css'
 import axios from "axios";
+import RequestURL from "../../../requestURL";
 const RadioGroup = Radio.Group;
 const Step = Steps.Step;
 
@@ -45,7 +46,7 @@ const StudentGuidePage=()=>{
                 <div style={{marginTop:20,backgroundColor:'white',width:'100%',borderRadius:20,marginBottom:10}}>
                     <Upload
                         drag
-                        action={`http://192.210.174.146:5000/resume/upload/${user.user_id}`}
+                        action={RequestURL+`/resume/upload/${user.user_id}`}
                         limit={1}
                         onExceedLimit={() => {
                             Message.warning('超过上传数量限制！最多上传1个');
@@ -175,7 +176,7 @@ const StudentGuidePage=()=>{
                             if(privacy!=='') {
                                 axios({
                                     method:'post',
-                                    url:'http://192.210.174.146:5000/resume/post-info/'+user.user_id,
+                                    url:RequestURL+'/resume/post-info/'+user.user_id,
                                     data:{
                                         "identity":'student',
                                         "privacySetting":privacy,

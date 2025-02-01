@@ -8,11 +8,13 @@ import {IconMinus} from '@arco-design/web-react/icon';
 import {useEffect, useState} from 'react';
 import {useLocation, useNavigate} from "react-router-dom";
 import axios from "axios";
+import RequestURL from "../../../../../requestURL";
+
 const TextArea=Input.TextArea
 const Option = Select.Option;
 const options=['男','女']
 const educationSelection=['大专','本科','硕士','博士']
-const citySelection=['北京','上海','广州','深圳']
+const citySelection=['北京','上海' , '广州' , '深圳' , '武汉' , '南京', '成都','重庆','杭州', '天津','苏州','长沙' ,'青岛' , '西安' ,'郑州' , '宁波' , '无锡', '大连','东莞','昆明','合肥']
 
 const selectedStyle={width:50,height:31,display:'flex',justifyContent:'center',alignItems:'center',backgroundColor:'rgba(60,192,201,100%)',color:'white'}
 const notSelectedStyle={width:50,height:31,display:'flex',justifyContent:'center',alignItems:'center',backgroundColor:'whitesmoke',color:'#4E5969'}
@@ -43,7 +45,7 @@ const EditInformation =()=>{
     useEffect(() => {
         axios({
             method:'get',
-            url:'http://192.210.174.146:5000/students/get-info/'+user.user_id,
+            url:RequestURL+'/students/get-info/'+user.user_id,
             data:{
                 userId:user.user_id,
             }
@@ -51,8 +53,8 @@ const EditInformation =()=>{
             res=>{
                 setName(res.data.name)
                 setSex(res.data.sex)
-                setLowestSalary(parseInt(res.data.lowestSalary))
-                setHighestSalary(parseInt(res.data.highestSalary))
+                setLowestSalary(parseInt(res.data.lowestSalary)/1000)
+                setHighestSalary(parseInt(res.data.highestSalary)/1000)
                 setPhone(res.data.phone)
                 setEducation(res.data.education)
                 setYear(parseInt(res.data.year))
@@ -65,6 +67,7 @@ const EditInformation =()=>{
                 setProject(res.data.project)
                 setAdvantage(res.data.advantage)
                 setLoading(false)
+                console.log( setYear(parseInt(res.data.year)))
             },
             error=>{
                 Message.error('数据请求失败！')
@@ -200,6 +203,8 @@ const EditInformation =()=>{
                                             <span style={{color:'red'}}>* </span>意向城市
                                         </div>
                                         <Select
+                                            showSearch
+                                            allowClear
                                             defaultValue={intentionCity}
                                             style={{ marginBottom:17,marginTop:3,borderRadius:5,width:200}}
                                             onChange={value =>{
@@ -216,7 +221,7 @@ const EditInformation =()=>{
 
                                     <div>
                                         <div style={{fontSize:17,color:'grey'}}>
-                                            电子邮箱（选填）
+                                            <span style={{color:'red'}}>* </span>电子邮箱
                                         </div>
                                         <Input defaultValue={email} style={{ marginBottom:17,marginTop:3,borderRadius:5 }} onChange={value=>{setEmail(value)}}/>
                                     </div>
@@ -280,10 +285,48 @@ const EditInformation =()=>{
                             <Button onClick={()=>{navigate('/main/student_information',{state:user})}} style={{border:'1px solid lightgrey',color:'rgba(60,192,201,100%)',backgroundColor:'white',width:85,height:35,fontSize:16,borderRadius:3,display:"flex",justifyContent:'center',alignItems:'center'}}>返 回</Button>
                             <Button
                                 onClick={()=>{
-                                    if(name.trim()!==''&&sex.trim()!==''&&lowestSalary!==0&&highestSalary!==0&&phone.trim()!==''&&education.trim()!==''&&intention.trim()!==''&&intentionCity.trim()!==''&&profession.trim()!==''&&educationExperience.trim()!==''){
+                                    if(name !== ''  &&
+                                        name !== null  &&
+                                        name !== undefined  &&
+                                        sex !== ''  &&
+                                        sex !==  null &&
+                                        sex !==  undefined &&
+                                        !isNaN(lowestSalary)  &&
+                                        lowestSalary !==  undefined &&
+                                        lowestSalary !==  0  &&
+                                        lowestSalary !==  null  &&
+                                        !isNaN(highestSalary)  &&
+                                        highestSalary !== undefined &&
+                                        highestSalary !==  0  &&
+                                        highestSalary !==  null &&
+                                        !isNaN(year) &&
+                                        year !== undefined &&
+                                        year !== 0  &&
+                                        year !== null  &&
+                                        email !== null  &&
+                                        email !== undefined &&
+                                        email !== ''  &&
+                                        phone !== ''  &&
+                                        phone !== undefined &&
+                                        phone !== null  &&
+                                        education !==  null&&
+                                        education !==  undefined &&
+                                        education !== '' &&
+                                        intention !== null  &&
+                                        intention !== undefined &&
+                                        intention !== ''  &&
+                                        intentionCity !== '' &&
+                                        intentionCity !== undefined &&
+                                        intentionCity !==  null &&
+                                        profession !== '' &&
+                                        profession !== undefined &&
+                                        profession !== null &&
+                                        educationExperience !== '' &&
+                                        educationExperience !==  undefined &&
+                                        educationExperience !== null){
                                         axios({
                                             method:'put',
-                                            url:'http://192.210.174.146:5000/students/update-info',
+                                            url:RequestURL+'/students/update-info',
                                             data:{
                                                 "userId": user.user_id,
                                                 "name": name,
