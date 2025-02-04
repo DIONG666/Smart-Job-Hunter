@@ -171,7 +171,7 @@ const RecruitPage=()=>{
         return (<Radio.Group>
             {person.map((value)=>{
                 return (
-                    <Radio key={value} value={value} style={{width:'24em', marginBottom:20}}>
+                    <Radio key={value} value={value} style={{width:'80%', marginBottom:20}}>
                         {({checked})=>{
                             return (
                                 <Button
@@ -235,7 +235,7 @@ const RecruitPage=()=>{
                             <div style={{marginLeft:'7%',width:'20%',fontSize:30,color:'rgba(60,192,201,100%)',fontWeight:'bold'}}>
                                 推荐候选人
                             </div>
-                            <div style={{marginLeft:'3%'}}>
+                            <div style={{marginLeft:'3%',width:'30%'}}>
                                 <RadioGroup onChange={value => {
                                     axios({
                                         method:'get',

@@ -177,7 +177,7 @@ const ApplyForJobPage=()=>{
         return (<Radio.Group>
             {job.map((value)=>{
                 return (
-                    <Radio key={value} value={value} style={{width:'24em', marginBottom:20}}>
+                    <Radio key={value} value={value} style={{width:'23em', marginBottom:20}}>
                         {({checked})=>{
                             return (
                                 <Button

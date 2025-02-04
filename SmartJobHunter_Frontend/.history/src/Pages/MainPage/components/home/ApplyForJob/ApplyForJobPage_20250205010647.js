@@ -177,7 +177,7 @@ const ApplyForJobPage=()=>{
         return (<Radio.Group>
             {job.map((value)=>{
                 return (
-                    <Radio key={value} value={value} style={{width:'24em', marginBottom:20}}>
+                    <Radio key={value} value={value} style={{width:'100em', marginBottom:20}}>
                         {({checked})=>{
                             return (
                                 <Button
@@ -219,10 +219,10 @@ const ApplyForJobPage=()=>{
 
     return (<>
         {
-            allLoading?
+            !allLoading?
                 <Card style={{width:'100%',height:'100%'}} bordered={false} loading={loading}/>
                 :
-                haveJob?
+                !haveJob?
                     <>
                         <div style={{width:'100%',backgroundColor:'white',height:'65px',display:'flex',alignItems:'center'}}>
                             <div style={{marginLeft:'7%',width:'20%',fontSize:30,color:'rgba(60,192,201,100%)',fontWeight:'bold'}}>
@@ -365,9 +365,7 @@ const ApplyForJobPage=()=>{
                                             )
                                         }}
                                         style={{width:105,height:40,position:'absolute',top:20,right:50}}
-                                    >
-                                        查看简历
-                                    </img>
+                                    />
                                     <div style={{height:'10%',margin:'15px 50px 20px 50px',display:'flex',justifyContent:'space-between'}}>
                                         <div>
                                             <div style={{display:'flex'}}>

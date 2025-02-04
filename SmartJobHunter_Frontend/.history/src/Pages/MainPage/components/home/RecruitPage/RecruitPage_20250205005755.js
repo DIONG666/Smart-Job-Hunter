@@ -34,7 +34,7 @@ const notSelectedCardStyle={
 }
 
 const RecruitPage=()=>{
-    const user=useLocation().state
+    // const user=useLocation().state
 
     const [person,setPerson]=useState([{
         name:'',
@@ -171,7 +171,7 @@ const RecruitPage=()=>{
         return (<Radio.Group>
             {person.map((value)=>{
                 return (
-                    <Radio key={value} value={value} style={{width:'24em', marginBottom:20}}>
+                    <Radio key={value} value={value} style={{width:'80%', marginBottom:20}}>
                         {({checked})=>{
                             return (
                                 <Button
