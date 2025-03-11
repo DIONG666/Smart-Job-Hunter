@@ -365,9 +365,7 @@ const ApplyForJobPage=()=>{
                                             )
                                         }}
                                         style={{width:105,height:40,position:'absolute',top:20,right:50}}
-                                    >
-                                        查看简历
-                                    </img>
+                                    />
                                     <div style={{height:'10%',margin:'15px 50px 20px 50px',display:'flex',justifyContent:'space-between'}}>
                                         <div>
                                             <div style={{display:'flex'}}>
