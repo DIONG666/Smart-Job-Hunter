@@ -209,7 +209,7 @@ const InterviewPage=()=>{
                 AI智领职途
             </div>
             <div style={{height:'100%',width:'50%',display:'flex',alignItems:'center',justifyContent:'center',fontSize:38,color:'rgba(60,192,201,100%)'}}>
-                智谱AI面试官
+                DeepSeek AI面试官
             </div>
             <div style={{width:'15%'}}></div>
         </div>

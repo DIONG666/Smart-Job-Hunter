@@ -1,102 +1,220 @@
-import requests
+import sqlite3
+from openai import OpenAI
+import random
+from typing import Dict, List, Tuple
 import json
-from typing import List, Dict
-from readResume import read_pdf_file
 
-class DeepSeekInterviewer:
-    def __init__(self, api_key: str):
-        self.api_key = api_key
-        self.base_url = "https://api.deepseek.com/chat/completions"  # 请根据实际API地址修改
-        self.conversation_history = []
+DATABASE = 'globalData/Information.db'
 
-        # 可微调参数
-        self.temperature = 0.7  # 控制生成随机性 (0~2)
-        self.max_tokens = 500  # 生成内容最大长度
-        self.top_p = 0.9  # 采样阈值
-        self.stop_sequences = ["面试结束"]  # 停止序列
-        # self.frequency_penalty = 1.0 # 控制内容重复 (-2~2)
+def get_db_connection():
+    conn = sqlite3.connect(DATABASE)
+    conn.row_factory = sqlite3.Row
+    return conn
 
-        # 初始化系统提示
-        self._init_system_prompt()
+# ========== 可配置参数 ==========
+CONFIG = {
+    "api_key": "sk-d5909142d7994378be059ca4c85efd81",
+    "temperature": 1.3,       # 生成温度
+    "enable_stream": False,   # 是否启用流式输出
+    "interviewer_tone": "温和而专业，保持鼓励性语气",
+    
+    # 预定义话题池（可扩展）
+    "topic_prompts": [
+        "请考察候选人对数据结构与算法的理解",
+        "请评估候选人在软件工程实践方面的经验",
+        "请测试候选人系统设计能力",
+        "请考察计算机网络基础知识",
+        "请评估操作系统核心概念掌握程度"
+    ],
+    
+    # 开放性问题提示
+    "open_question_prompt": "请提出一个考察职业规划或求职动机的开放性问题"
+}
 
-    def _init_system_prompt(self):
-        system_prompt = """你是一个专业的AI面试官，需要根据候选人的简历信息进行技术面试。请遵循以下规则：
-        1. 首先分析简历中的专业技能和工作经历
-        2. 生成与岗位要求相关的技术问题
-        3. 根据候选人的回答进行追问或生成新问题
-        4. 面试持续5轮后进入评价阶段
-        5. 使用专业但友好的语气
-        """
-        self.add_message("system", system_prompt)
+# ========== DeepSeek 客户端 ==========
+client = OpenAI(
+    api_key=CONFIG["api_key"],
+    base_url="https://api.deepseek.com"
+)
 
-    def add_message(self, role: str, content: str):
-        self.conversation_history.append({"role": role, "content": content})
+# ========== 核心功能实现 ==========
+class AIInterviewer:
+    def __init__(self):
+        self.dialog_history = []
+        self.current_topic = None
+        self.topic_count = 0
+        self.round_counter = 0
 
-    def generate_questions(self, resume: str) -> str:
-        # 首次生成问题
-        self.add_message("user", f"这是我的简历：{resume}\n请开始面试")
-        return self._call_api()
+    def _build_system_prompt(self) -> str:
+        """构建专业面试官系统提示"""
+        evaluation_dimensions = [
+            "技术深度（原理理解/实践经验）",
+            "逻辑表达（结构化/条理性）",
+            "自我反思（改进意识/学习能力）",
+            "岗位匹配（技能相关性/发展潜力）"
+        ]
 
-    def process_answer(self, user_answer: str) -> str:
-        # 处理用户回答并生成后续问题
-        self.add_message("user", user_answer)
-        return self._call_api()
+        return f'''角色设定：
+    你是在{self.position['title']}领域有10年经验的资深技术面试官，正在为{self.position['company']}公司进行校招面试。候选人背景如下：
+    {self._format_candidate_profile()}
 
-    def _call_api(self) -> str:
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {self.api_key}"
-        }
+    面试目标：
+    通过深度对话评估候选人的{self.position['title']}岗位适配度，重点关注：
+    {self._format_evaluation_points(evaluation_dimensions)}
 
-        payload = {
-            "model": "deepseek-chat",  # 根据实际模型名称修改
-            "messages": self.conversation_history,
-            "temperature": self.temperature,
-            "max_tokens": self.max_tokens,
-            "top_p": self.top_p,
-            "stop": self.stop_sequences,
-        }
+    行为准则：
+    1. 提问策略：
+       - 基础八股：考察核心概念理解（如："TCP为什么需要三次握手？"）
+       - 项目追问：使用STAR法则深挖项目细节（如："你在项目中如何应对需求变更？"）
+       - 情景模拟：设计技术场景题（如："如果QPS突然飙升，你会如何排查？"）
 
-        try:
-            response = requests.post(self.base_url, headers=headers, json=payload)
-            response.raise_for_status()
+    2. 追问原则：
+       - 当回答模糊时追问："你具体负责了哪些模块的实现？"
+       - 当出现矛盾时澄清："这里和简历描述的时间线似乎不一致，能解释下吗？"
+       - 对技术难点追问："当时遇到的最大挑战是什么？如何解决的？"
 
-            result = response.json()
-            ai_response = result['choices'][0]['message']['content']
-            self.add_message("assistant", ai_response)
+    3. 交互规范：
+       - 每次只提一个问题
+       - 避免专业术语堆砌，用"能否举例说明"引导阐述
+       - 对不正确答案给予提示（如："这个理解有偏差，建议从XXX角度再思考"）
 
-            return ai_response
-        except Exception as e:
-            return f"API调用出错：{str(e)}"
+    岗位匹配分析：
+    公司需求：{self.position['description']}
+    核心要求：{self.position['core_requirements']}
+    技术栈偏好：{self.position['tech_stack']}
 
-    def evaluate_interview(self) -> str:
-        # 生成最终评价
-        evaluation_prompt = """请基于上述面试对话，从以下维度生成评估报告：
-        1. 技术能力匹配度
-        2. 问题解决能力
-        3. 沟通表达能力
-        4. 改进建议"""
+    评分基准（供内部参考）：
+    - 优秀（85+）：能展开技术细节，有反思总结
+    - 合格（70+）：概念正确但缺乏深度
+    - 待提升（<70）：关键概念错误或表述混乱'''
 
-        self.add_message("user", evaluation_prompt)
-        return self._call_api()
+    def _format_candidate_profile(self) -> str:
+        """结构化候选人背景"""
+        return f'''【候选人档案】
+    姓名：{self.candidate['name']}
+    教育背景：{self.candidate['education']}
+    技术标签：{', '.join(self.candidate['skills'])}
+    项目经历：
+    {self._format_projects()}
+    实习经历：{self.candidate['internship'] or "无相关实习经验"}'''
 
+    def _format_projects(self) -> str:
+        """格式化项目经历"""
+        return '\n'.join(
+            f'- {proj["name"]}：{proj["description"][:50]}...'
+            for proj in self.candidate['projects']
+        )
 
-if __name__ == '__main__':
-    API_KEY = "your_api_key_here"
-    resume_content = read_pdf_file("test.pdf")
+    def _format_evaluation_points(self, dimensions: List[str]) -> str:
+        """生成评估要点"""
+        return '\n'.join(f'• {d}' for d in dimensions)
+    
+    def _get_next_question(self, last_response: str = None) -> str:
+        """获取下一个问题"""
+        messages = [
+            {"role": "system", "content": self._build_system_prompt()},
+            *self.dialog_history
+        ]
+        
+        if last_response:
+            messages.append({"role": "user", "content": last_response})
+        
+        response = client.chat.completions.create(
+            model="deepseek-chat",
+            messages=messages,
+            temperature=CONFIG["temperature"],
+            stream=CONFIG["enable_stream"]
+        )
+        return response.choices[0].message.content
+    
+    def start_interview(self, candidate: Dict, position: Dict):
+        """启动面试流程"""
+        self.candidate = candidate
+        self.position = position
+        
+        # 自我介绍环节
+        intro_question = f"{candidate['name']}你好，请先介绍一下你自己吧！"
+        print(f"[面试官] {intro_question}")
+        self.dialog_history.append({"role": "assistant", "content": intro_question})
+        
+        # 考察简历内容
+        while self.topic_count < CONFIG["max_topics"]:
+            self._handle_topic_phase()
+        
+        # 开放性问题环节
+        self._ask_open_question()
+        
+        # 结束面试
+        closing = self._get_next_question("请说一句面试结束语")
+        print(f"\n[面试官] {closing}")
+        
+        # 生成报告
+        self.generate_report()
+    
+    def _handle_topic_phase(self):
+        """处理单个话题问答"""
+        # 选择新话题
+        self.current_topic = random.choice(CONFIG["topic_prompts"])
+        self.dialog_history.append({
+            "role": "system", 
+            "content": f"当前考察主题：{self.current_topic}"
+        })
+        
+        # 话题引导问题
+        question = self._get_next_question(self.current_topic)
+        print(f"\n[面试官] {question}")
+        self.dialog_history.append({"role": "assistant", "content": question})
+        
+        # 话题追问循环
+        self.round_counter = 0
+        while self.round_counter < CONFIG["max_rounds_per_topic"]:
+            answer = input("[候选人] ").strip()
+            self.dialog_history.append({"role": "user", "content": answer})
+            
+            # 生成追问或切换话题
+            if self.round_counter < CONFIG["max_rounds_per_topic"] - 1:
+                follow_up = self._get_next_question(answer)
+                print(f"\n[面试官] {follow_up}")
+                self.dialog_history.append({"role": "assistant", "content": follow_up})
+            
+            self.round_counter += 1
+        
+        self.topic_count += 1
+    
+    def _ask_open_question(self):
+        """提出开放性问题"""
+        question = self._get_next_question(CONFIG["open_question_prompt"])
+        print(f"\n[面试官] {question}")
+        self.dialog_history.append({"role": "assistant", "content": question})
+        answer = input("[候选人] ").strip()
+        self.dialog_history.append({"role": "user", "content": answer})
+    
+    def generate_report(self):
+        """生成评估报告"""
+        report_prompt = f'''基于以下对话历史，生成JSON格式的评估报告：
+        {json.dumps(self.dialog_history, ensure_ascii=False)}
+        
+        报告需包含：
+        1. 综合评分（百分制）
+        2. 分维度评价（技术能力、项目理解、沟通表达）
+        3. 具体示例分析（至少3个）
+        4. 提升建议
+        保持专业客观，用markdown格式输出'''
+        
+        response = client.chat.completions.create(
+            model="deepseek-chat",
+            messages=[{"role": "user", "content": report_prompt}],
+            temperature=0.5
+        )
+        print("\n=== 面试评估报告 ===")
+        print(response.choices[0].message.content)
 
-    interviewer = DeepSeekInterviewer(API_KEY)
-
-    # 生成初始问题
-    first_question = interviewer.generate_questions(resume_content)
-    print("面试官：", first_question)
-
-    # 模拟多轮对话
-    for _ in range(4):
-        user_input = input("求职者回答：")
-        next_question = interviewer.process_answer(user_input)
-        print("面试官：", next_question)
-
-    # 生成最终评价
-    evaluation = interviewer.evaluate_interview()
-    print("\n面试评价：\n", evaluation)
+# ========== 执行面试 ==========
+if __name__ == "__main__":
+    interviewer = AIInterviewer()
+    
+    # 启动面试流程（使用示例数据）
+    interviewer.start_interview(
+        candidate=SAMPLE_DATA["candidate"],
+        position=SAMPLE_DATA["position"]
+    )

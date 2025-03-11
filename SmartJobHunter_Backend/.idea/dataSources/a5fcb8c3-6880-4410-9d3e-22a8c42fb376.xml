@@ -499,7 +499,7 @@
     </routine>
     <schema id="191" parent="1" name="main">
       <Current>1</Current>
-      <LastIntrospectionLocalTimestamp>2025-02-01.09:19:53</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2025-03-11.09:26:49</LastIntrospectionLocalTimestamp>
     </schema>
     <argument id="192" parent="16">
       <ArgumentDirection>R</ArgumentDirection>
@@ -1590,297 +1590,37 @@
     <argument id="554" parent="190">
       <Position>1</Position>
     </argument>
-    <table id="555" parent="191" name="company_info"/>
-    <table id="556" parent="191" name="recommended_jobs"/>
-    <table id="557" parent="191" name="sqlite_master">
+    <table id="555" parent="191" name="sqlite_master">
       <System>1</System>
     </table>
-    <table id="558" parent="191" name="sqlite_sequence">
+    <table id="556" parent="191" name="sqlite_sequence">
       <System>1</System>
     </table>
-    <table id="559" parent="191" name="student_info"/>
-    <table id="560" parent="191" name="user"/>
-    <column id="561" parent="555" name="id">
-      <AutoIncrement>1</AutoIncrement>
-      <Position>1</Position>
-      <StoredType>INTEGER|0s</StoredType>
-    </column>
-    <column id="562" parent="555" name="user_id">
-      <NotNull>1</NotNull>
-      <Position>2</Position>
-      <StoredType>INTEGER|0s</StoredType>
-    </column>
-    <column id="563" parent="555" name="name">
-      <Position>3</Position>
-      <StoredType>nchar(30)|0s</StoredType>
-    </column>
-    <column id="564" parent="555" name="job">
-      <Position>4</Position>
-      <StoredType>nchar(30)|0s</StoredType>
-    </column>
-    <column id="565" parent="555" name="description">
-      <Position>5</Position>
-      <StoredType>nvarchar(255)|0s</StoredType>
-    </column>
-    <column id="566" parent="555" name="education">
-      <Position>6</Position>
-      <StoredType>nchar(4)|0s</StoredType>
-    </column>
-    <column id="567" parent="555" name="manager">
-      <Position>7</Position>
-      <StoredType>nchar(10)|0s</StoredType>
-    </column>
-    <column id="568" parent="555" name="salary">
-      <Position>8</Position>
-      <StoredType>char(20)|0s</StoredType>
-    </column>
-    <column id="569" parent="555" name="created_at">
-      <Position>9</Position>
-      <StoredType>DATE|0s</StoredType>
-    </column>
-    <column id="570" parent="555" name="lastActive">
-      <Position>10</Position>
-      <StoredType>nchar(30)|0s</StoredType>
-    </column>
-    <column id="571" parent="555" name="address">
-      <Position>11</Position>
-      <StoredType>nvarchar(30)|0s</StoredType>
-    </column>
-    <column id="572" parent="555" name="link">
-      <Position>12</Position>
-      <StoredType>varchar(150)|0s</StoredType>
-    </column>
-    <column id="573" parent="555" name="skills">
-      <Position>13</Position>
-      <StoredType>varchar(255)|0s</StoredType>
-    </column>
-    <column id="574" parent="555" name="city">
-      <Position>14</Position>
-      <StoredType>nchar(30)|0s</StoredType>
-    </column>
-    <foreign-key id="575" parent="555">
-      <ColNames>user_id</ColNames>
-      <RefColNames>id</RefColNames>
-      <RefTableName>user</RefTableName>
-    </foreign-key>
-    <key id="576" parent="555">
-      <ColNames>id</ColNames>
-      <Primary>1</Primary>
-    </key>
-    <column id="577" parent="556" name="id">
-      <AutoIncrement>1</AutoIncrement>
-      <Position>1</Position>
-      <StoredType>INTEGER|0s</StoredType>
-    </column>
-    <column id="578" parent="556" name="user_id">
-      <NotNull>1</NotNull>
-      <Position>2</Position>
-      <StoredType>INTEGER|0s</StoredType>
-    </column>
-    <column id="579" parent="556" name="job_id">
-      <NotNull>1</NotNull>
-      <Position>3</Position>
-      <StoredType>INTEGER|0s</StoredType>
-    </column>
-    <column id="580" parent="556" name="match">
-      <NotNull>1</NotNull>
-      <Position>4</Position>
-      <StoredType>REAL|0s</StoredType>
-    </column>
-    <column id="581" parent="556" name="educationMatch">
-      <NotNull>1</NotNull>
-      <Position>5</Position>
-      <StoredType>REAL|0s</StoredType>
-    </column>
-    <column id="582" parent="556" name="addressMatch">
-      <NotNull>1</NotNull>
-      <Position>6</Position>
-      <StoredType>REAL|0s</StoredType>
-    </column>
-    <column id="583" parent="556" name="salaryMatch">
-      <NotNull>1</NotNull>
-      <Position>7</Position>
-      <StoredType>REAL|0s</StoredType>
-    </column>
-    <column id="584" parent="556" name="abilityMatch">
-      <NotNull>1</NotNull>
-      <Position>8</Position>
-      <StoredType>REAL|0s</StoredType>
-    </column>
-    <column id="585" parent="556" name="evaluation">
-      <Position>9</Position>
-      <StoredType>text|0s</StoredType>
-    </column>
-    <foreign-key id="586" parent="556">
-      <ColNames>user_id</ColNames>
-      <RefColNames>id</RefColNames>
-      <RefTableName>user</RefTableName>
-    </foreign-key>
-    <foreign-key id="587" parent="556">
-      <ColNames>job_id</ColNames>
-      <RefColNames>id</RefColNames>
-      <RefTableName>company_info</RefTableName>
-    </foreign-key>
-    <key id="588" parent="556">
-      <ColNames>id</ColNames>
-      <Primary>1</Primary>
-    </key>
-    <column id="589" parent="557" name="type">
+    <column id="557" parent="555" name="type">
       <Position>1</Position>
       <StoredType>TEXT|0s</StoredType>
     </column>
-    <column id="590" parent="557" name="name">
+    <column id="558" parent="555" name="name">
       <Position>2</Position>
       <StoredType>TEXT|0s</StoredType>
     </column>
-    <column id="591" parent="557" name="tbl_name">
+    <column id="559" parent="555" name="tbl_name">
       <Position>3</Position>
       <StoredType>TEXT|0s</StoredType>
     </column>
-    <column id="592" parent="557" name="rootpage">
+    <column id="560" parent="555" name="rootpage">
       <Position>4</Position>
       <StoredType>INT|0s</StoredType>
     </column>
-    <column id="593" parent="557" name="sql">
+    <column id="561" parent="555" name="sql">
       <Position>5</Position>
       <StoredType>TEXT|0s</StoredType>
     </column>
-    <column id="594" parent="558" name="name">
+    <column id="562" parent="556" name="name">
       <Position>1</Position>
     </column>
-    <column id="595" parent="558" name="seq">
+    <column id="563" parent="556" name="seq">
       <Position>2</Position>
     </column>
-    <check id="596" parent="559">
-      <Predicate>privacy_setting in(0,1,2)</Predicate>
-    </check>
-    <column id="597" parent="559" name="id">
-      <AutoIncrement>1</AutoIncrement>
-      <Position>1</Position>
-      <StoredType>INTEGER|0s</StoredType>
-    </column>
-    <column id="598" parent="559" name="user_id">
-      <NotNull>1</NotNull>
-      <Position>2</Position>
-      <StoredType>INTEGER|0s</StoredType>
-    </column>
-    <column id="599" parent="559" name="name">
-      <Position>3</Position>
-      <StoredType>nchar(5)|0s</StoredType>
-    </column>
-    <column id="600" parent="559" name="sex">
-      <Position>4</Position>
-      <StoredType>nchar(2)|0s</StoredType>
-    </column>
-    <column id="601" parent="559" name="lowestSalary">
-      <Position>5</Position>
-      <StoredType>varchar(5)|0s</StoredType>
-    </column>
-    <column id="602" parent="559" name="highestSalary">
-      <Position>6</Position>
-      <StoredType>varchar(5)|0s</StoredType>
-    </column>
-    <column id="603" parent="559" name="phone">
-      <Position>7</Position>
-      <StoredType>char(15)|0s</StoredType>
-    </column>
-    <column id="604" parent="559" name="education">
-      <Position>8</Position>
-      <StoredType>nchar(4)|0s</StoredType>
-    </column>
-    <column id="605" parent="559" name="year">
-      <Position>9</Position>
-      <StoredType>int|0s</StoredType>
-    </column>
-    <column id="606" parent="559" name="intention">
-      <Position>10</Position>
-      <StoredType>nvarchar(20)|0s</StoredType>
-    </column>
-    <column id="607" parent="559" name="intentionCity">
-      <Position>11</Position>
-      <StoredType>nvarchar(5)|0s</StoredType>
-    </column>
-    <column id="608" parent="559" name="email">
-      <Position>12</Position>
-      <StoredType>varchar(30)|0s</StoredType>
-    </column>
-    <column id="609" parent="559" name="profession">
-      <Position>13</Position>
-      <StoredType>nvarchar(20)|0s</StoredType>
-    </column>
-    <column id="610" parent="559" name="educationExperience">
-      <Position>14</Position>
-      <StoredType>text|0s</StoredType>
-    </column>
-    <column id="611" parent="559" name="internship">
-      <Position>15</Position>
-      <StoredType>text|0s</StoredType>
-    </column>
-    <column id="612" parent="559" name="project">
-      <Position>16</Position>
-      <StoredType>text|0s</StoredType>
-    </column>
-    <column id="613" parent="559" name="advantage">
-      <Position>17</Position>
-      <StoredType>text|0s</StoredType>
-    </column>
-    <column id="614" parent="559" name="privacy_setting">
-      <Position>18</Position>
-      <StoredType>int|0s</StoredType>
-    </column>
-    <column id="615" parent="559" name="skills">
-      <Position>19</Position>
-      <StoredType>varchar(255)|0s</StoredType>
-    </column>
-    <column id="616" parent="559" name="resume_path">
-      <Position>20</Position>
-      <StoredType>TEXT|0s</StoredType>
-    </column>
-    <foreign-key id="617" parent="559">
-      <ColNames>user_id</ColNames>
-      <RefColNames>id</RefColNames>
-      <RefTableName>user</RefTableName>
-    </foreign-key>
-    <key id="618" parent="559">
-      <ColNames>id</ColNames>
-      <Primary>1</Primary>
-    </key>
-    <check id="619" parent="560">
-      <Predicate>identity in(&apos;student&apos;,&apos;firm&apos;)</Predicate>
-    </check>
-    <column id="620" parent="560" name="id">
-      <AutoIncrement>1</AutoIncrement>
-      <Position>1</Position>
-      <StoredType>INTEGER|0s</StoredType>
-    </column>
-    <column id="621" parent="560" name="username">
-      <Position>2</Position>
-      <StoredType>nchar(5)|0s</StoredType>
-    </column>
-    <column id="622" parent="560" name="email">
-      <Position>3</Position>
-      <StoredType>varchar(30)|0s</StoredType>
-    </column>
-    <column id="623" parent="560" name="password">
-      <Position>4</Position>
-      <StoredType>varchar(20)|0s</StoredType>
-    </column>
-    <column id="624" parent="560" name="phone">
-      <Position>5</Position>
-      <StoredType>varchar(20)|0s</StoredType>
-    </column>
-    <column id="625" parent="560" name="first_login">
-      <DefaultExpression>true</DefaultExpression>
-      <Position>6</Position>
-      <StoredType>boolean|0s</StoredType>
-    </column>
-    <column id="626" parent="560" name="identity">
-      <Position>7</Position>
-      <StoredType>char(10)|0s</StoredType>
-    </column>
-    <key id="627" parent="560">
-      <ColNames>id</ColNames>
-      <Primary>1</Primary>
-    </key>
   </database-model>
 </dataSource>
